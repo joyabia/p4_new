@@ -2,30 +2,56 @@
 
 /*
 |--------------------------------------------------------------------------
-| Routes File
+| Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you will register all of the routes in an application.
+| Here is where you can register all of the routes for an application.
 | It's a breeze. Simply tell Laravel the URIs it should respond to
 | and give it the controller to call when that URI is requested.
 |
 */
 
+// Authentication routes...
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| This route group applies the "web" middleware group to every route
-| it contains. The "web" middleware group is defined in your HTTP
-| kernel and includes session state, CSRF protection, and more.
-|
-*/
+Route::get('/login', 'Auth\AuthController@getLogin');
+Route::post('/login', 'Auth\AuthController@postLogin');
 
-Route::group(['middleware' => ['web']], function () {
-    //
+
+// Registration routes...
+Route::get('/register', 'Auth\AuthController@getRegister');
+Route::post('/register', 'Auth\AuthController@postRegister');
+
+Route::get('/logout', 'Auth\AuthController@getLogout');
+
+//serve the attendance sign-in sign-out form
+Route::get('/signattendance', 'AttendanceController@create');
+
+//submit attendance form to update database
+Route::post('/submitattendance', 'AttendanceController@store');
+
+Route::get('/confirm-login-worked', function() {
+
+    # You may access the authenticated user via the Auth facade
+    $user = Auth::user();
+    
+    
+   
+
+    if($user) {
+        echo 'You are logged in.';
+        echo $user;
+        foreach($user->kids as $kid){
+        	echo $kid->firstname;
+        	echo"---------------------";
+        }
+    } else {
+        echo 'You are not logged in.';
+    }
+
+    return;
+
 });
+
